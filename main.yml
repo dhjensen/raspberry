@@ -1,0 +1,17 @@
+---
+## main.yml
+- hosts: pi
+  become: yes
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    pip_package: python3-pip
+    pip_install_packages:
+      - name: docker
+    docker_version_armv7: 5:20.10.1~3-0~raspbian-buster
+    docker_users:
+      - dhjensen
+
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker_arm
