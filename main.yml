@@ -5,13 +5,114 @@
 
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    pip_package: python3-pip
-    pip_install_packages:
-      - name: docker
-    docker_version_armv7: 5:20.10.1~3-0~raspbian-buster
-    docker_users:
-      - dhjensen
+    ssh_allow_user: "{{ ansible_user | default(ansible_ssh_user) }}"
 
-  roles:
-    - geerlingguy.pip
-    - geerlingguy.docker_arm
+    # manala.bind role vars:
+    manala_bind_options:
+      - -4
+      - -u bind
+    manala_bind_configs:
+      - file: named.conf.options
+        template: templates/bind/named.conf.options.j2
+      - file: named.conf.log
+        template: templates/bind/named.conf.log.j2
+      - file: named.conf.local
+        template: templates/bind/named.conf.local.j2
+      - file: named.conf.tech
+        template: templates/bind/named.conf.tech.j2
+    manala_bind_zones:
+      - zone: dhjensen.tech
+        dynamic: true
+        template: templates/bind/zones/dhjensen.tech.j2
+        records:
+          - record: pi
+            value: 192.168.0.34
+
+  pre_tasks:
+
+    - name: Check ssh_allow_user is defined and have value
+      assert:
+        that: ssh_allow_user is defined and ssh_allow_user | length >0
+        fail_msg: "Usage: ansible-playbook main.yml --extra-vars \"ssh_allow_user=<user>\""
+
+    - name: Ensure apt cache is updated.
+      apt:
+        update_cache: true
+        cache_valid_time: 600
+
+  tasks:
+
+    - name: Copy apparmor/local for bind
+      copy:
+        src: files/local/usr.sbin.named
+        dest: /etc/apparmor.d/local/usr.sbin.named
+        mode: 0640
+        owner: 'root'
+        group: 'root'
+      register: r_copy_apparmor_profile
+
+    - name: Install vim
+      apt:
+        name: vim
+        state: present
+
+    - name: Configure pi lights
+      cron:
+        name: "{{ item.name }}"
+        job: "{{ item.job }}"
+        user: root
+        special_time: reboot
+        state: present
+      loop:
+        - { name: 'red_power_light', job: '/usr/bin/echo 1 > /sys/class/leds/PWR/brightness' }
+        - { name: 'green_disk_trigger', job: '/usr/bin/echo mmc1 > /sys/class/leds/ACT/trigger' }
+
+    - name: Remove SSH key from root user
+      authorized_key:
+        user: root
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+        state: absent
+
+    - name: Update SSH configuration to be more secure.
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+        validate: 'sshd -t -f %s'
+      with_items:
+        - regexp: "^PasswordAuthentication"
+          line: "PasswordAuthentication no"
+        - regexp: "^PermitRootLogin"
+          line: "PermitRootLogin no"
+        - regexp: "^AllowUsers"
+          line: "AllowUsers {{ ssh_allow_user }}"
+      notify: Restart ssh
+
+    - name: Import manala.bind role
+      import_role:
+        name: manala.bind
+
+    - name: Install firewalld
+      apt:
+        name: firewalld
+        state: present
+      register: r_firewalld
+
+    - name: Add firewall rules for bind
+      firewalld:
+        state: enabled
+        zone: public
+        service: dns
+        permanent: yes
+        immediate: yes
+      when:
+        - __manala_bind_options is defined and __manala_bind_options.failed == false
+        - r_firewalld is defined and r_firewalld
+
+  handlers:
+    - name: Restart ssh
+      service:
+        name: ssh
+        state: restarted
+...

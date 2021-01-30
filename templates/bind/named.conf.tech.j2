@@ -1,0 +1,7 @@
+zone "dhjensen.tech" {
+    type master;
+    file "{{ 'dhjensen.tech'|manala_bind_zone_file }}";
+    forwarders { };
+    allow-query { internals; };
+    allow-update { internals; localhost; };
+};

@@ -1,4 +1,5 @@
-- src: geerlingguy.pip
-  version: 2.0.0
-- src: geerlingguy.docker_arm
-  version: 4.0.0
+---
+roles:
+  - name: manala.bind
+    version: 2.0.2
+...
