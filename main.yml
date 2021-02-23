@@ -51,6 +51,10 @@
         group: 'root'
       register: r_copy_apparmor_profile
 
+    - name: Set timezone
+      timezone:
+        name: Europe/Copenhagen
+
     - name: Install vim
       apt:
         name: vim
