@@ -1,0 +1,7 @@
+zone "0.168.192.in-addr.arpa" {
+    type master;
+    file "{{ '0.168.192'|manala_bind_zone_file }}";
+    forwarders { };
+    allow-query { internals; };
+    allow-update { internals; localhost; };
+};

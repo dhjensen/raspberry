@@ -18,6 +18,8 @@
         template: templates/bind/named.conf.log.j2
       - file: named.conf.local
         template: templates/bind/named.conf.local.j2
+      - file: named.conf.rfc1918
+        template: templates/bind/named.conf.rfc1918.j2
       - file: named.conf.tech
         template: templates/bind/named.conf.tech.j2
     manala_bind_zones:
@@ -27,6 +29,13 @@
         records:
           - record: pi
             value: 192.168.0.34
+      - zone: "0.168.192.in-addr.arpa"
+        dynamic: true
+        template: templates/bind/zones/0.168.192.j2
+        records:
+          - record: "34.0.168.192.in-addr.arpa."
+            value: "pi.dhjensen.tech."
+            type: "PTR"
 
   pre_tasks:
 
