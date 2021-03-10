@@ -113,7 +113,7 @@
       register: r_firewalld
 
     - name: Add firewall rules for bind
-      firewalld:
+      ansible.posix.firewalld:
         state: enabled
         zone: public
         service: dns
