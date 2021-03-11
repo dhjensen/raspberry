@@ -1,41 +1,18 @@
 ---
 ## main.yml
 - hosts: pi
-  become: yes
+  become: true
 
   vars:
     ansible_python_interpreter: /usr/bin/python3
     ssh_allow_user: "{{ ansible_user | default(ansible_ssh_user) }}"
 
-    # manala.bind role vars:
-    manala_bind_options:
-      - -4
-      - -u bind
-    manala_bind_configs:
-      - file: named.conf.options
-        template: templates/bind/named.conf.options.j2
-      - file: named.conf.log
-        template: templates/bind/named.conf.log.j2
-      - file: named.conf.local
-        template: templates/bind/named.conf.local.j2
-      - file: named.conf.rfc1918
-        template: templates/bind/named.conf.rfc1918.j2
-      - file: named.conf.tech
-        template: templates/bind/named.conf.tech.j2
-    manala_bind_zones:
-      - zone: dhjensen.tech
-        dynamic: true
-        template: templates/bind/zones/dhjensen.tech.j2
-        records:
-          - record: pi
-            value: 192.168.0.34
-      - zone: "0.168.192.in-addr.arpa"
-        dynamic: true
-        template: templates/bind/zones/0.168.192.j2
-        records:
-          - record: "34.0.168.192.in-addr.arpa."
-            value: "pi.dhjensen.tech."
-            type: "PTR"
+  vars_files:
+    - vars/main.yml
+
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker_arm
 
   pre_tasks:
 
@@ -48,6 +25,11 @@
       apt:
         update_cache: true
         cache_valid_time: 600
+
+    - name: Install libffi-dev for pip docker-compose install
+      apt:
+        name: libffi-dev
+        state: present
 
   tasks:
 
@@ -77,8 +59,8 @@
         special_time: reboot
         state: present
       loop:
-        - { name: 'red_power_light', job: '/usr/bin/echo 1 > /sys/class/leds/PWR/brightness' }
-        - { name: 'green_disk_trigger', job: '/usr/bin/echo mmc1 > /sys/class/leds/ACT/trigger' }
+        - {name: 'red_power_light', job: '/usr/bin/echo 1 > /sys/class/leds/PWR/brightness'}
+        - {name: 'green_disk_trigger', job: '/usr/bin/echo mmc1 > /sys/class/leds/ACT/trigger'}
 
     - name: Remove SSH key from root user
       authorized_key:
@@ -117,10 +99,10 @@
         state: enabled
         zone: public
         service: dns
-        permanent: yes
-        immediate: yes
+        permanent: true
+        immediate: true
       when:
-        - __manala_bind_options is defined and __manala_bind_options.failed == false
+        - __manala_bind_options is defined and not __manala_bind_options.failed
         - r_firewalld is defined and r_firewalld
 
   handlers:

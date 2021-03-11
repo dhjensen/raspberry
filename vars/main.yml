@@ -1,0 +1,37 @@
+---
+# manala.bind role vars:
+manala_bind_options:
+  - -4
+  - -u bind
+manala_bind_configs:
+  - file: named.conf.options
+    template: templates/bind/named.conf.options.j2
+  - file: named.conf.log
+    template: templates/bind/named.conf.log.j2
+  - file: named.conf.local
+    template: templates/bind/named.conf.local.j2
+  - file: named.conf.rfc1918
+    template: templates/bind/named.conf.rfc1918.j2
+  - file: named.conf.tech
+    template: templates/bind/named.conf.tech.j2
+manala_bind_zones:
+  - zone: dhjensen.tech
+    dynamic: true
+    template: templates/bind/zones/dhjensen.tech.j2
+    records:
+      - record: pi
+        value: 192.168.0.34
+  - zone: "0.168.192.in-addr.arpa"
+    dynamic: true
+    template: templates/bind/zones/0.168.192.j2
+    records:
+      - record: "34.0.168.192.in-addr.arpa."
+        value: "pi.dhjensen.tech."
+        type: "PTR"
+
+# geerlingguy.docker_arm role vars:
+docker_version_arm64: 5:20.10.5~3-0~debian-buster
+docker_users:
+  - "{{ ansible_user | default(ansible_ssh_user) }}"
+
+...
