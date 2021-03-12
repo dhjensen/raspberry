@@ -2,4 +2,15 @@
 roles:
   - name: manala.bind
     version: 2.0.2
+    src: https://github.com/manala/ansible-role-bind.git
+  - name: geerlingguy.pip
+    version: 2.0.0
+    src: https://github.com/geerlingguy/ansible-role-pip.git
+  - name: geerlingguy.docker_arm
+    version: 4.1.0
+    src: https://github.com/geerlingguy/ansible-role-docker_arm.git
+collections:
+  - name: ansible.posix
+    version: 1.1.1
+    src: https://github.com/ansible-collections/ansible.posix.git
 ...
