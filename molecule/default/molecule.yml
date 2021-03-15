@@ -2,9 +2,19 @@
 dependency:
   name: galaxy
 driver:
-  name: delegated
+  name: vagrant
+  provider:
+    name: virtualbox
+lint: |
+  ansible-lint
 platforms:
-  - name: instance
+  - name: dnsserver
+    box: geerlingguy/debian10
+    memory: 512
+    hostname: "pi"
+    define: "pi"
+    instance_raw_config_args:
+      - 'vm.network "private_network", ip: "192.168.46.84"'
 provisioner:
   name: ansible
 verifier:

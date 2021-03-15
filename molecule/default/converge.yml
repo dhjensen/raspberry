@@ -2,6 +2,5 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include raspberry"
-      include_role:
-        name: "raspberry"
+    - name: "Include raspberry main.yml"
+      include_tasks: "../../main.yml"
