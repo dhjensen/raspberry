@@ -21,6 +21,13 @@
         that: ssh_allow_user is defined and ssh_allow_user | length >0
         fail_msg: "Usage: ansible-playbook main.yml --extra-vars \"ssh_allow_user=<user>\""
 
+    # Add backport package repo
+    - name: Add backports repository
+      apt_repository:
+        repo: deb http://deb.debian.org/debian buster-backports main
+        state: present
+        update_cache: no
+
     - name: Ensure apt cache is updated.
       apt:
         update_cache: true
@@ -30,6 +37,13 @@
       apt:
         name: libffi-dev
         state: present
+
+    # Because of https://kopiszka.com/2019/12/02/debian-buster-10-broken-iptables-1-8-2-with-firewalld/
+    - name: Install latest iptables version from backport
+      apt:
+        name: iptables=1.8.5-3~bpo10+1
+        state: present
+        default_release: buster-backports
 
   tasks:
 
