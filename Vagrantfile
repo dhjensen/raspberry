@@ -28,7 +28,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  config.vm.define "client" do |client|
+  config.vm.define "client", autostart: false do |client|
     client.vm.hostname = "client"
 
     client.vm.network :private_network, type: "dhcp", name: "vboxnet0"
