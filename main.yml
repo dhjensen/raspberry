@@ -24,7 +24,7 @@
     # Add backport package repo
     - name: Add backports repository
       apt_repository:
-        repo: deb http://deb.debian.org/debian buster-backports main
+        repo: deb http://deb.debian.org/debian bookworm-backports main
         state: present
         update_cache: no
 
@@ -39,11 +39,11 @@
         state: present
 
     # Because of https://kopiszka.com/2019/12/02/debian-buster-10-broken-iptables-1-8-2-with-firewalld/
-    - name: Install latest iptables version from backport
-      apt:
-        name: iptables=1.8.5-3~bpo10+1
-        state: present
-        default_release: buster-backports
+    # - name: Install latest iptables version from backport
+    #  apt:
+    #    name: iptables=1.8.5-3~bpo10+1
+    #    state: present
+    #    default_release: buster-backports
 
   tasks:
 
@@ -79,8 +79,9 @@
     - name: Remove SSH key from root user
       authorized_key:
         user: root
-        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub', errors='ignore') }}"
         state: absent
+      ignore_errors: true
 
     - name: Update SSH configuration to be more secure.
       lineinfile:
@@ -100,7 +101,7 @@
 
     - name: Import manala.bind role
       import_role:
-        name: manala.bind
+        name: manala.roles.bind
 
     - name: Install firewalld
       apt:

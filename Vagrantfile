@@ -4,10 +4,10 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "geerlingguy/debian10"
+  config.vm.box = "debian/bookworm64"
   config.vm.hostname = "pi"
   config.vm.define "pi"
-  config.vm.network :private_network, ip: "192.168.46.84"
+  config.vm.network :private_network, ip: "192.168.56.84"
   config.ssh.insert_key = false
 
   config.vm.provider :virtualbox do |v|
@@ -18,7 +18,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "main.yml"
     ansible.become = true
-    #ansible.verbose = "vvvv"
+#    ansible.verbose = "vvvv"
+    ansible.compatibility_mode = "2.0"
     ansible.extra_vars = {
       ansible_python_interpreter: "/usr/bin/python3",
     }

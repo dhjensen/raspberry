@@ -30,8 +30,8 @@ manala_bind_zones:
         type: "PTR"
 
 # geerlingguy.docker_arm role vars:
-docker_version_arm64: 5:20.10.5~3-0~debian-buster
+docker_version_arm64: 5:24.0.5-1~debian.12~bookworm 
 docker_users:
   - "{{ ansible_user | default(ansible_ssh_user) }}"
-
+docker_install_compose: false
 ...
