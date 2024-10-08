@@ -6,9 +6,8 @@ roles:
   - name: geerlingguy.pip
     version: 2.2.0
     src: https://github.com/geerlingguy/ansible-role-pip.git
-  - name: geerlingguy.docker_arm
-    version: 5.0.0 
-    src: https://github.com/geerlingguy/ansible-role-docker_arm.git
+  - name: geerlingguy.docker
+    version: 7.4.1 
 collections:
   - name: ansible.posix
     version: 1.5.4 
