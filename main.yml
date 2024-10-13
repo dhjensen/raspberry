@@ -113,6 +113,29 @@
         - __manala_bind_options is defined and not __manala_bind_options.failed
         - r_firewalld is defined and r_firewalld
 
+    - name: Git checkout matomo docker project
+      ansible.builtin.git:
+        repo: 'https://github.com/dhjensen/matomo-docker.git'
+        dest: /root/matomo-docker
+ 
+    - name: Create directory /root/bin
+      ansible.builtin.file:
+        path: /root/bin
+        state: directory
+
+    - name: Copy renecerts.sh file to /root/bin
+      ansible.builtin.copy:
+        src: files/root/bin/renewcerts.sh 
+        dest: /root/bin/renewcerts.sh
+        mode: u+x
+
+    - name: Add cron to run renewcerts.sh
+      ansible.builtin.cron:
+        name: renewcerts
+        job: /root/bin/renewcerts.sh
+        month: 1-12
+        user: root
+
   handlers:
     - name: Restart ssh
       service:
