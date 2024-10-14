@@ -133,7 +133,7 @@
       ansible.builtin.cron:
         name: renewcerts
         job: /root/bin/renewcerts.sh
-        month: 1-12
+        special_time: 'weekly'
         user: root
 
   handlers:
