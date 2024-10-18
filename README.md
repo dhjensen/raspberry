@@ -1,6 +1,6 @@
 # Raspberry pi host
 
-Target is RPI4B 8GB running "pure" [Debian](<https://raspi.debian.net/>).
+Target is RPI5 8GB running [Debian](<https://debian.org/>).
 
 Configure DNS server with bind9.
 

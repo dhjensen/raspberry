@@ -1,6 +1,6 @@
 ---
 ## main.yml
-- hosts: pi
+- hosts: pi2
   become: true
 
   vars:
@@ -57,17 +57,6 @@
       apt:
         name: vim
         state: present
-
-    - name: Configure pi lights
-      cron:
-        name: "{{ item.name }}"
-        job: "{{ item.job }}"
-        user: root
-        special_time: reboot
-        state: present
-      loop:
-        - {name: 'red_power_light', job: '/usr/bin/echo 1 > /sys/class/leds/PWR/brightness'}
-        - {name: 'green_disk_trigger', job: '/usr/bin/echo mmc1 > /sys/class/leds/ACT/trigger'}
 
     - name: Remove SSH key from root user
       authorized_key:
