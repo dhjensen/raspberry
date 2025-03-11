@@ -53,10 +53,13 @@
       timezone:
         name: Europe/Copenhagen
 
-    - name: Install vim
-      apt:
-        name: vim
+    - name: Install vim and iperf3
+      ansible.builtin.apt:
+        name: "{{ item }}"
         state: present
+      loop:
+        - vim
+        - iperf3
 
     - name: Remove SSH key from root user
       authorized_key:
