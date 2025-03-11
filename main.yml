@@ -105,6 +105,15 @@
         - __manala_bind_options is defined and not __manala_bind_options.failed
         - r_firewalld is defined and r_firewalld
 
+    - name: Add firewall rules for iperf3
+      ansible.posix.firewalld:
+        state: enabled
+        zone: public
+        port: 5201/tcp
+        permanent: true
+        immediate: true
+      when: r_firewalld is defined and r_firewalld
+
     - name: Git checkout matomo docker project
       ansible.builtin.git:
         repo: 'https://github.com/dhjensen/matomo-docker.git'
