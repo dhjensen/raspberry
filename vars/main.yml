@@ -19,14 +19,17 @@ manala_bind_zones:
     dynamic: true
     template: templates/bind/zones/dhjensen.tech.j2
     records:
-      - record: pi
-        value: 192.168.0.34
+      - record: pi2
+        value: 192.168.0.76
+      - record: beszel
+        value: "pi2"
+        type: "CNAME"
   - zone: "0.168.192.in-addr.arpa"
     dynamic: true
     template: templates/bind/zones/0.168.192.j2
     records:
-      - record: "34.0.168.192.in-addr.arpa."
-        value: "pi.dhjensen.tech."
+      - record: "76.0.168.192.in-addr.arpa."
+        value: "pi2.dhjensen.tech."
         type: "PTR"
 
 # geerlingguy.docker role vars:
