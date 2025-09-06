@@ -114,28 +114,23 @@
         immediate: true
       when: r_firewalld is defined and r_firewalld
 
-    - name: Git checkout matomo docker project
-      ansible.builtin.git:
-        repo: 'https://github.com/dhjensen/matomo-docker.git'
-        dest: /root/matomo-docker
- 
-    - name: Create directory /root/bin
+    - name: Remove matomo docker project directory
       ansible.builtin.file:
-        path: /root/bin
-        state: directory
+        path: /root/matomo-docker
+        state: "absent"
 
-    - name: Copy renecerts.sh file to /root/bin
-      ansible.builtin.copy:
-        src: files/root/bin/renewcerts.sh 
-        dest: /root/bin/renewcerts.sh
-        mode: u+x
+    - name: Remove renewcerts.sh file from /root/bin
+      ansible.builtin.file:
+        path: /root/bin/renewcerts.sh
+        state: "absent"
 
-    - name: Add cron to run renewcerts.sh
+    - name: Remove cron to run renewcerts.sh
       ansible.builtin.cron:
         name: renewcerts
         job: /root/bin/renewcerts.sh
         special_time: 'weekly'
         user: root
+        state: "absent"
 
   handlers:
     - name: Restart ssh
