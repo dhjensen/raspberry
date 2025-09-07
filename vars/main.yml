@@ -27,6 +27,10 @@ manala_bind_zones:
       - record: npm
         value: "pi2"
         type: "CNAME"
+      - record: wg
+        value: "pi2"
+        type: "CNAME"
+
   - zone: "0.168.192.in-addr.arpa"
     dynamic: true
     template: templates/bind/zones/0.168.192.j2
