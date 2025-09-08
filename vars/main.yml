@@ -33,6 +33,12 @@ manala_bind_zones:
       - record: wud
         value: "pi2"
         type: "CNAME"
+      - record: ntfy
+        value: "pi2"
+        type: "CNAME"
+      - record: maubot
+        value: "pi2"
+        type: "CNAME"
 
   - zone: "0.168.192.in-addr.arpa"
     dynamic: true
