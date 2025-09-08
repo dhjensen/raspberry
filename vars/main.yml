@@ -39,6 +39,9 @@ manala_bind_zones:
       - record: maubot
         value: "pi2"
         type: "CNAME"
+      - record: cyberchef
+        value: "pi2"
+        type: "CNAME"
 
   - zone: "0.168.192.in-addr.arpa"
     dynamic: true
