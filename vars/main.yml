@@ -48,6 +48,9 @@ manala_bind_zones:
       - record: dozzle
         value: "pi2"
         type: "CNAME"
+      - record: homarr
+        value: "pi2"
+        type: "CNAME"
 
   - zone: "0.168.192.in-addr.arpa"
     dynamic: true
