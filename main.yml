@@ -114,6 +114,22 @@
         immediate: true
       when: r_firewalld is defined and r_firewalld
 
+    - name: Add RustDesk firewall rules
+      ansible.posix.firewalld:
+        state: enabled
+        zone: public
+        port: "{{ item.port }}"
+        permanent: true
+        immediate: true
+      with_items:
+        - port: "21115/tcp"
+        - port: "21116/tcp"
+        - port: "21116/udp"
+        - port: "21118/tcp"
+        - port: "21117/tcp"
+        - port: "21119/tcp"
+      when: r_firewalld is defined and r_firewalld
+
     - name: Remove matomo docker project directory
       ansible.builtin.file:
         path: /root/matomo-docker
