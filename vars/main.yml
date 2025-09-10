@@ -54,6 +54,9 @@ manala_bind_zones:
       - record: speedtest
         value: "pi2"
         type: "CNAME"
+      - record: rustdesk
+        value: "pi2"
+        type: "CNAME"
 
   - zone: "0.168.192.in-addr.arpa"
     dynamic: true
