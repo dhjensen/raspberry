@@ -21,6 +21,8 @@ manala_bind_zones:
     records:
       - record: pi2
         value: 192.168.0.76
+      - record: daniel-pc
+        value: 192.168.0.64
       - record: beszel
         value: "pi2"
         type: "CNAME"
@@ -60,6 +62,12 @@ manala_bind_zones:
       - record: duplicati
         value: "pi2"
         type: "CNAME"
+      - record: jellyfin
+        value: "daniel-pc"
+        type: "CNAME"
+      - record: netbox
+        value: "pi2"
+        type: "CNAME"
 
   - zone: "0.168.192.in-addr.arpa"
     dynamic: true
@@ -67,6 +75,9 @@ manala_bind_zones:
     records:
       - record: "76.0.168.192.in-addr.arpa."
         value: "pi2.dhjensen.tech."
+        type: "PTR"
+      - record: "64.0.168.192.in-addr.arpa."
+        value: "daniel-pc.dhjensen.tech."
         type: "PTR"
 
 # geerlingguy.docker role vars:
