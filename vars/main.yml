@@ -80,6 +80,12 @@ manala_bind_zones:
       - record: ombi
         value: "pi2"
         type: "CNAME"
+      - record: qb
+        value: "daniel-pc"
+        type: "CNAME"
+      - record: jackett
+        value: "pi2"
+        type: "CNAME"
 
   - zone: "0.168.192.in-addr.arpa"
     dynamic: true
