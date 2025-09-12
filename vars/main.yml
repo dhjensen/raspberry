@@ -107,4 +107,41 @@ manala_bind_zones:
 # geerlingguy.docker role vars:
 docker_users:
   - "{{ ansible_user | default(ansible_ssh_user) }}"
+
+# git repos to clone to dest folder
+git_repos:
+  - repo: https://github.com/dhjensen/beszel-docker.git
+    dest: beszel-docker
+  - repo: https://github.com/dhjensen/cyber-chef-docker.git
+    dest: cyber-chef-docker
+  - repo: https://github.com/dhjensen/dozzle-docker.git
+    dest: dozzle-docker
+  - repo: https://github.com/dhjensen/duplicati-docker.git
+    dest: duplicati-docker
+  - repo: https://github.com/dhjensen/homarr-docker.git
+    dest: homarr-docker
+  - repo: https://github.com/dhjensen/it-tools-docker.git
+    dest: it-tools-docker
+  - repo: https://github.com/dhjensen/jackett-docker.git
+    dest: jackett-docker
+  - repo: https://github.com/dhjensen/matomo-docker.git
+    dest: matomo-docker
+  - repo: https://github.com/dhjensen/maubot-docker.git
+    dest: maubot-docker
+  - repo: https://github.com/dhjensen/netbox-compose.git
+    dest: netbox-compose
+  - repo: https://github.com/dhjensen/nginx-proxy-manager.git
+    dest: nginx-proxy-manager
+  - repo: https://github.com/dhjensen/ntfy-docker.git
+    dest: ntfy-docker
+  - repo: https://github.com/dhjensen/ombi-docker.git
+    dest: ombi-docker
+  - repo: https://github.com/dhjensen/openspeedtest-docker.git
+    dest: openspeedtest-docker
+  - repo: https://github.com/dhjensen/rustdesk-docker.git
+    dest: rustdesk-docker
+  - repo: https://github.com/dhjensen/wg-portal-docker.git
+    dest: wg-portal-docker
+  - repo: https://github.com/dhjensen/whats-up-docker.git
+    dest: whats-up-docker
 ...

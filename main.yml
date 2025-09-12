@@ -154,6 +154,13 @@
         user: root
         state: "absent"
 
+    - name: git clone and update git repositorys
+      ansible.builtin.git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+      become_user: "{{ ansible_user }}"
+      loop: "{{ git_repos }}"
+
   handlers:
     - name: Restart ssh
       service:
