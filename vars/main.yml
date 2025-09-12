@@ -29,11 +29,17 @@ manala_bind_zones:
       - record: npm
         value: "pi2"
         type: "CNAME"
+      - record: npm-pc
+        value: "daniel-pc"
+        type: "CNAME"
       - record: wg
         value: "pi2"
         type: "CNAME"
       - record: wud
         value: "pi2"
+        type: "CNAME"
+      - record: wud-pc
+        value: "daniel-pc"
         type: "CNAME"
       - record: ntfy
         value: "pi2"
@@ -49,6 +55,9 @@ manala_bind_zones:
         type: "CNAME"
       - record: dozzle
         value: "pi2"
+        type: "CNAME"
+      - record: dozzle-pc
+        value: "daniel-pc"
         type: "CNAME"
       - record: homarr
         value: "pi2"
