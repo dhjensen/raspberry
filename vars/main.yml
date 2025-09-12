@@ -86,6 +86,9 @@ manala_bind_zones:
       - record: jackett
         value: "pi2"
         type: "CNAME"
+      - record: radarr
+        value: "daniel-pc"
+        type: "CNAME"
 
   - zone: "0.168.192.in-addr.arpa"
     dynamic: true
