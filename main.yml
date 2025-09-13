@@ -160,6 +160,7 @@
         dest: "{{ item.dest }}"
       become_user: "{{ ansible_user }}"
       loop: "{{ git_repos }}"
+      tags: git
 
   handlers:
     - name: Restart ssh
