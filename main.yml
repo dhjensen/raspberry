@@ -158,6 +158,7 @@
       ansible.builtin.git:
         repo: "{{ item.repo }}"
         dest: "{{ item.dest }}"
+        version: main
       become_user: "{{ ansible_user }}"
       loop: "{{ git_repos }}"
       tags: git
