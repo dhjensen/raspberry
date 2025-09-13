@@ -92,6 +92,9 @@ manala_bind_zones:
       - record: sonarr
         value: "daniel-pc"
         type: "CNAME"
+      - record: gitea
+        value: "pi2"
+        type: "CNAME"
 
   - zone: "0.168.192.in-addr.arpa"
     dynamic: true
@@ -144,4 +147,6 @@ git_repos:
     dest: wg-portal-docker
   - repo: https://github.com/dhjensen/whats-up-docker.git
     dest: whats-up-docker
+  - repo: https://github.com/dhjensen/gitea-docker.git
+    dest: gitea-docker
 ...
