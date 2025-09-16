@@ -95,6 +95,9 @@ manala_bind_zones:
       - record: gitea
         value: "pi2"
         type: "CNAME"
+      - record: croc
+        value: "pi2"
+        type: "CNAME"
 
   - zone: "0.168.192.in-addr.arpa"
     dynamic: true
@@ -149,4 +152,6 @@ git_repos:
     dest: whats-up-docker
   - repo: https://github.com/dhjensen/gitea-docker.git
     dest: gitea-docker
+  - repo: https://github.com/dhjensen/croc-docker.git
+    dest: croc-docker
 ...
