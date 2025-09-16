@@ -136,6 +136,21 @@
         - port: "21119/tcp"
       when: r_firewalld is defined and r_firewalld
 
+    - name: Add Croc firewall rules
+      ansible.posix.firewalld:
+        state: enabled
+        zone: public
+        port: "{{ item.port }}"
+        permanent: true
+        immediate: true
+      with_items:
+        - port: "9009/tcp"
+        - port: "9010/tcp"
+        - port: "9011/tcp"
+        - port: "9012/tcp"
+        - port: "9013/tcp"
+      when: r_firewalld is defined and r_firewalld
+
     - name: Remove matomo docker project directory
       ansible.builtin.file:
         path: /root/matomo-docker
