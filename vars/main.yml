@@ -3,6 +3,7 @@
 manala_bind_options:
   - -4
   - -u bind
+  - -p 5053
 manala_bind_configs:
   - file: named.conf.options
     template: templates/bind/named.conf.options.j2
@@ -98,6 +99,9 @@ manala_bind_zones:
       - record: croc
         value: "pi2"
         type: "CNAME"
+      - record: pihole
+        value: "pi2"
+        type: "CNAME"
 
   - zone: "0.168.192.in-addr.arpa"
     dynamic: true
@@ -154,4 +158,6 @@ git_repos:
     dest: gitea-docker
   - repo: https://github.com/dhjensen/croc-docker.git
     dest: croc-docker
+  - repo: https://github.com/dhjensen/pi-hole-docker.git
+    dest: pi-hole-docker
 ...
