@@ -19,7 +19,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "main.yml"
     ansible.become = true
-#    ansible.verbose = "vvvv"
+    ansible.compatibility_mode = "2.0"
     ansible.extra_vars = {
       ansible_python_interpreter: "/usr/bin/python3",
     }

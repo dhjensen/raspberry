@@ -1,6 +1,7 @@
 ---
 ## main.yml
-- hosts: pi2
+- name: Creating raspberry ps os docker host
+  hosts: pi2
   become: true
 
   vars:
@@ -17,26 +18,21 @@
   pre_tasks:
 
     - name: Check ssh_allow_user is defined and have value
-      assert:
+      ansible.builtin.assert:
         that: ssh_allow_user is defined and ssh_allow_user | length >0
         fail_msg: "Usage: ansible-playbook main.yml --extra-vars \"ssh_allow_user=<user>\""
 
     # Add backport package repo
     - name: Add backports repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: deb http://deb.debian.org/debian bookworm-backports main
         state: present
-        update_cache: no
+        update_cache: false
 
     - name: Ensure apt cache is updated.
-      apt:
+      ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 600
-
-    - name: Install libffi-dev for pip docker-compose install
-      apt:
-        name: libffi-dev
-        state: present
 
   tasks:
 
@@ -46,17 +42,13 @@
         regexp: '(.+?)(?<!cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1)$'
         replace: '\1 cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1'
 
-    - name: Copy apparmor/local for bind
-      copy:
-        src: files/local/usr.sbin.named
-        dest: /etc/apparmor.d/local/usr.sbin.named
-        mode: 0640
-        owner: 'root'
-        group: 'root'
-      register: r_copy_apparmor_profile
+    - name: Remove apparmor/local named file
+      ansible.builtin.file:
+        path: /etc/apparmor.d/local/usr.sbin.named
+        state: "absent"
 
     - name: Set timezone
-      timezone:
+      community.general.timezone:
         name: Europe/Copenhagen
 
     - name: Install vim and iperf3
@@ -68,14 +60,13 @@
         - iperf3
 
     - name: Remove SSH key from root user
-      authorized_key:
+      ansible.posix.authorized_key:
         user: root
         key: "{{ lookup('file', '~/.ssh/id_rsa.pub', errors='ignore') }}"
         state: absent
-      ignore_errors: true
 
     - name: Update SSH configuration to be more secure.
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
@@ -90,17 +81,24 @@
           line: "AllowUsers {{ ssh_allow_user }}"
       notify: Restart ssh
 
-    - name: Import manala.bind role
-      import_role:
-        name: manala.roles.bind
+    - name: Uninstall bind9 package and purge config files
+      ansible.builtin.apt:
+        name: bind9
+        state: "absent"
+        purge: true
+
+    - name: Remove named.conf.tech
+      ansible.builtin.file:
+        path: /etc/bind/named.conf.tech
+        state: "absent"
 
     - name: Install firewalld
-      apt:
+      ansible.builtin.apt:
         name: firewalld
         state: present
       register: r_firewalld
 
-    - name: Add firewall rules for bind
+    - name: Add firewall rules for pi-hole
       ansible.posix.firewalld:
         state: enabled
         zone: public
@@ -108,8 +106,7 @@
         permanent: true
         immediate: true
       when:
-        - __manala_bind_options is defined and not __manala_bind_options.failed
-        - r_firewalld is defined and r_firewalld
+        - r_firewalld is defined and r_firewalld.failed == false
 
     - name: Add firewall rules for iperf3
       ansible.posix.firewalld:
@@ -118,7 +115,7 @@
         port: 5201/tcp
         permanent: true
         immediate: true
-      when: r_firewalld is defined and r_firewalld
+      when: r_firewalld is defined and r_firewalld.failed == false
 
     - name: Add RustDesk firewall rules
       ansible.posix.firewalld:
@@ -134,7 +131,7 @@
         - port: "21118/tcp"
         - port: "21117/tcp"
         - port: "21119/tcp"
-      when: r_firewalld is defined and r_firewalld
+      when: r_firewalld is defined and r_firewalld.failed == false
 
     - name: Add Croc firewall rules
       ansible.posix.firewalld:
@@ -149,38 +146,21 @@
         - port: "9011/tcp"
         - port: "9012/tcp"
         - port: "9013/tcp"
-      when: r_firewalld is defined and r_firewalld
+      when: r_firewalld is defined and r_firewalld.failed == false
 
-    - name: Remove matomo docker project directory
-      ansible.builtin.file:
-        path: /root/matomo-docker
-        state: "absent"
-
-    - name: Remove renewcerts.sh file from /root/bin
-      ansible.builtin.file:
-        path: /root/bin/renewcerts.sh
-        state: "absent"
-
-    - name: Remove cron to run renewcerts.sh
-      ansible.builtin.cron:
-        name: renewcerts
-        job: /root/bin/renewcerts.sh
-        special_time: 'weekly'
-        user: root
-        state: "absent"
-
-    - name: git clone and update git repositorys
+    - name: Git clone and update git repositorys
       ansible.builtin.git:
         repo: "{{ item.repo }}"
         dest: "{{ item.dest }}"
         version: main
       become_user: "{{ ansible_user }}"
+      become: true
       loop: "{{ git_repos }}"
       tags: git
 
   handlers:
     - name: Restart ssh
-      service:
+      ansible.builtin.service:
         name: ssh
         state: restarted
 ...
