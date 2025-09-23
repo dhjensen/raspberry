@@ -4,6 +4,8 @@ docker_users:
 
 # git repos to clone to dest folder
 git_repos:
+  - repo: https://github.com/dhjensen/atlas-docker.git
+    dest: atlas-docker
   - repo: https://github.com/dhjensen/beszel-docker.git
     dest: beszel-docker
   - repo: https://github.com/dhjensen/cyber-chef-docker.git
