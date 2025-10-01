@@ -89,8 +89,7 @@
         service: dns
         permanent: true
         immediate: true
-      when:
-        - r_firewalld is defined and r_firewalld.failed == false
+      when: r_firewalld is defined and not r_firewalld.failed
 
     - name: Add firewall rules for iperf3
       ansible.posix.firewalld:
@@ -99,7 +98,7 @@
         port: 5201/tcp
         permanent: true
         immediate: true
-      when: r_firewalld is defined and r_firewalld.failed == false
+      when: r_firewalld is defined and not r_firewalld.failed
 
     - name: Add RustDesk firewall rules
       ansible.posix.firewalld:
@@ -115,7 +114,7 @@
         - port: "21118/tcp"
         - port: "21117/tcp"
         - port: "21119/tcp"
-      when: r_firewalld is defined and r_firewalld.failed == false
+      when: r_firewalld is defined and not r_firewalld.failed
 
     - name: Add Croc firewall rules
       ansible.posix.firewalld:
@@ -130,7 +129,7 @@
         - port: "9011/tcp"
         - port: "9012/tcp"
         - port: "9013/tcp"
-      when: r_firewalld is defined and r_firewalld.failed == false
+      when: r_firewalld is defined and not r_firewalld.failed
 
   handlers:
     - name: Restart ssh
