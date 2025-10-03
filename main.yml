@@ -1,7 +1,9 @@
 ---
 ## main.yml
-- name: Creating raspberry ps os docker host
-  hosts: pi2
+- name: Applying docker host configuration
+  hosts:
+    - pi2
+    - instance-001
   become: true
 
   vars:
@@ -22,13 +24,6 @@
         that: ssh_allow_user is defined and ssh_allow_user | length >0
         fail_msg: "Usage: ansible-playbook main.yml --extra-vars \"ssh_allow_user=<user>\""
 
-    # Add backport package repo
-    - name: Add backports repository
-      ansible.builtin.apt_repository:
-        repo: deb http://deb.debian.org/debian bookworm-backports main
-        state: present
-        update_cache: false
-
     - name: Ensure apt cache is updated.
       ansible.builtin.apt:
         update_cache: true
@@ -41,6 +36,7 @@
         path: /boot/firmware/cmdline.txt
         regexp: '(.+?)(?<!cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1)$'
         replace: '\1 cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1'
+      when: inventory_hostname == "pi2"
 
     - name: Set timezone
       community.general.timezone:
@@ -48,11 +44,9 @@
 
     - name: Install vim and iperf3
       ansible.builtin.apt:
-        name: "{{ item }}"
+        name: iperf3
         state: present
-      loop:
-        - vim
-        - iperf3
+      when: inventory_hostname == "pi2"
 
     - name: Remove SSH key from root user
       ansible.posix.authorized_key:
@@ -82,6 +76,18 @@
         state: present
       register: r_firewalld
 
+    - name: Add Traefik http and https
+      ansible.posix.firewalld:
+        state: enabled
+        zone: public
+        service: "{{ item.service }}"
+        permanent: true
+        immediate: true
+      with_items:
+        - service: "http"
+        - service: "https"
+      when: r_firewalld is defined and not r_firewalld.failed
+
     - name: Add firewall rules for pi-hole
       ansible.posix.firewalld:
         state: enabled
@@ -89,7 +95,7 @@
         service: dns
         permanent: true
         immediate: true
-      when: r_firewalld is defined and not r_firewalld.failed
+      when: r_firewalld is defined and not r_firewalld.failed and inventory_hostname == "pi2"
 
     - name: Add firewall rules for iperf3
       ansible.posix.firewalld:
@@ -98,7 +104,7 @@
         port: 5201/tcp
         permanent: true
         immediate: true
-      when: r_firewalld is defined and not r_firewalld.failed
+      when: r_firewalld is defined and not r_firewalld.failed and inventory_hostname == "pi2"
 
     - name: Add RustDesk firewall rules
       ansible.posix.firewalld:
@@ -114,7 +120,7 @@
         - port: "21118/tcp"
         - port: "21117/tcp"
         - port: "21119/tcp"
-      when: r_firewalld is defined and not r_firewalld.failed
+      when: r_firewalld is defined and not r_firewalld.failed and inventory_hostname == "pi2"
 
     - name: Add Croc firewall rules
       ansible.posix.firewalld:
@@ -129,7 +135,7 @@
         - port: "9011/tcp"
         - port: "9012/tcp"
         - port: "9013/tcp"
-      when: r_firewalld is defined and not r_firewalld.failed
+      when: r_firewalld is defined and not r_firewalld.failed and inventory_hostname == "pi2"
 
   handlers:
     - name: Restart ssh
