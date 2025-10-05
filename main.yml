@@ -60,7 +60,6 @@
         name: snapd
         purge: true
         state: absent
-      when: inventory_hostname == "instance-001"
 
   tasks:
 
@@ -81,12 +80,13 @@
         state: present
       when: inventory_hostname == "pi2"
 
-    - name: Install nano and iotop
+    - name: Install nano, rsync and iotop
       ansible.builtin.apt:
         name: "{{ item.name }}"
         state: present
       with_items:
         - name: nano
+        - name: rsync
         - name: iotop
 
     - name: Remove SSH key from root user
