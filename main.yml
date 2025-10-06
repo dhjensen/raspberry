@@ -55,12 +55,6 @@
         state: mounted
       when: inventory_hostname == "instance-001"
 
-    - name: Uninstall snapd package
-      ansible.builtin.apt:
-        name: snapd
-        purge: true
-        state: absent
-
   tasks:
 
     - name: Add kernel boot parameters cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1
