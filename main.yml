@@ -158,10 +158,10 @@
       with_items:
         - port: "21115/tcp"
         - port: "21116/tcp"
-        - port: "21116/udp"
-        - port: "21118/tcp"
         - port: "21117/tcp"
+        - port: "21118/tcp"
         - port: "21119/tcp"
+        - port: "21116/udp"
       when: r_firewalld is defined and not r_firewalld.failed and inventory_hostname == "pi2"
 
     - name: Add Croc firewall rules
