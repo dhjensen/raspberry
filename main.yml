@@ -75,13 +75,26 @@
       community.general.timezone:
         name: Europe/Copenhagen
 
+    - name: Add infisical gpg key
+      ansible.builtin.apt_key:
+        state: present
+        url: https://artifacts-cli.infisical.com/infisical.gpg
+        keyring: /usr/share/keyrings/infisical-archive-keyring.gpg
+
+    - name: Add infisical repo
+      ansible.builtin.apt_repository:
+        filename: infisical
+        repo: "deb [arch={{ ansible_architecture | regex_replace('aarch64', 'arm64') }} signed-by=/usr/share/keyrings/infisical-archive-keyring.gpg] https://artifacts-cli.infisical.com/deb stable main"
+        state: present
+        update_cache: true
+
     - name: Install iperf3
       ansible.builtin.apt:
         name: iperf3
         state: present
       when: inventory_hostname == "pi2"
 
-    - name: Install nano, rsync and iotop
+    - name: Install packages
       ansible.builtin.apt:
         name: "{{ item.name }}"
         state: present
@@ -89,6 +102,7 @@
         - name: nano
         - name: rsync
         - name: iotop
+        - name: infisical
 
     - name: Remove SSH key from root user
       ansible.posix.authorized_key:
