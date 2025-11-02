@@ -193,6 +193,17 @@
         - port: "9013/tcp"
       when: r_firewalld is defined and not r_firewalld.failed and inventory_hostname == "pi2"
 
+    - name: Add Home Assistant firewall rules
+      ansible.posix.firewalld:
+        state: enabled
+        zone: public
+        port: "{{ item.port }}"
+        permanent: true
+        immediate: true
+      with_items:
+        - port: "8123/tcp"
+      when: r_firewalld is defined and not r_firewalld.failed and inventory_hostname == "pi2"
+
   handlers:
     - name: Restart ssh
       ansible.builtin.service:
