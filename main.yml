@@ -90,6 +90,7 @@
         - name: nano
         - name: rsync
         - name: iotop
+        - name: ncdu
 
     - name: Remove SSH key from root user
       ansible.posix.authorized_key:
